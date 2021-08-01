@@ -8,26 +8,31 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function onMessage(message: Discord.Message) {
+  // プレフィックスで始まらない文字列 or ボットからの送信は反応しない
   if (!message.content.startsWith(config.prefix) || message.author.bot) {
     return;
   }
 
+  // リマインドを送信するチャンネル
   const targetChannel = prisma.send_channel.findUnique({
     where: {
       server_id: message.guild!.id,
     },
   });
 
+  // 受け取ったメッセージのうち、プレフィックスのあとの単語たち
   const args = message.content.slice(config.prefix.length).split(' ');
 
+  // pingとかのコマンド
   const command: string = args[0];
 
-  // リマインドを送信するチャンネルを設定してなければしてもらう
+  // リマインドを送信するチャンネルを設定してなければしてもらうif
   if (!(await targetChannel)) {
     const filter: Discord.CollectorFilter = (reaction, user) =>
       ['✅', '❌'].includes(reaction.emoji.name) &&
       user.id === message.author.id;
 
+    // リアクションをつける確認メッセージ
     const responseWaitingMessage = await message.channel.send(
       `リマインドするチャンネルが設定されていません。\nこのチャンネルに設定しますか?`
     );
@@ -47,6 +52,7 @@ export async function onMessage(message: Discord.Message) {
       })
       .catch(() => 'Error');
 
+    // もし正常に応答されなかったらreturn
     if (typeof collected === 'string') {
       message.channel.send(
         '応答を確認することができませんでした。。もう一度やり直してください。'
@@ -54,9 +60,10 @@ export async function onMessage(message: Discord.Message) {
       return;
     }
 
+    // 入力されたemoji ✅ or ❌
     const emoji = collected.first()!.emoji.name;
 
-    // ❌のリアクションだと何もしない
+    // ❌のリアクションだとreturn
     if (emoji === '❌') {
       message.channel.send(
         '了解しました。他のチャンネルでもう一度やり直してください。'
@@ -64,8 +71,7 @@ export async function onMessage(message: Discord.Message) {
       return;
     }
 
-    // TODO ここでDBにチャンネルを保存する
-
+    // ここでsend_channelにリマインドする予定のチャンネルを保存する
     const createResult = await prisma.send_channel
       .create({
         data: {
@@ -75,6 +81,7 @@ export async function onMessage(message: Discord.Message) {
       })
       .catch(() => 'Error');
 
+    // もし正常に作成ができていなかったらreturn
     if (typeof createResult === 'string') {
       message.channel.send(
         'ERR: データベースに登録することができませんでした。'
@@ -87,12 +94,14 @@ export async function onMessage(message: Discord.Message) {
         (c) => c.id === createResult.channel_id
       )}\nに通知を送信します。\n変更する場合は、${
         config.prefix
-      }channel [channelのid] で変更することができます。`
+      }changeRemindChannel [channelのid] で変更することができます。`
     );
 
+    // TODO ここでreturnするか考える(コマンドの検知→初期設定のながれのあとにそのコマンドを実行するかどうか)
     return;
   }
 
+  // コマンドごとに振り分ける
   switch (command) {
     case 'ping':
       Commands.ping(message);
@@ -103,6 +112,7 @@ export async function onMessage(message: Discord.Message) {
       break;
 
     default:
+      // TODO 未知のコマンドを受け取ったときの処理
       break;
   }
 }
