@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model send_users {
+  server_id String @map("server_id")
+  user_id   String @map("user_id")
+
+  @@id([server_id, user_id])
+}
+
+model send_channel {
+  server_id  String @unique 
+  channel_id String 
+}

@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    tty: true
+    ports:
+      - 8010:8010
+    volumes:
+      - .:/app
+      - node_modules-volume:/app/node_modules
+    depends_on:
+      - db
+  db:
+    build:
+      context: '.'
+      dockerfile: 'db.Dockerfile'
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: acbot
+    volumes:
+      - acbot:/var/lib/postgresql/data
+volumes:
+  acbot:
+    external: true
+  node_modules-volume:
