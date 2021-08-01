@@ -111,8 +111,18 @@ export async function onMessage(message: Discord.Message) {
       Commands.fetch(message);
       break;
 
+    case 'changeRemindChannel':
+      break;
+
+    case 'help':
+      message.channel.send(`コマンド一覧はこちら↓`);
+      Commands.help(message);
+      break;
+
     default:
-      // TODO 未知のコマンドを受け取ったときの処理
+      // 未知のコマンドを受け取ったときの処理
+      message.channel.send(`未知のコマンドです。コマンド一覧はこちら↓`);
+      Commands.help(message);
       break;
   }
 }
