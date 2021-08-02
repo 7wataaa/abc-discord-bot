@@ -36,16 +36,20 @@ export async function onMessage(message: Discord.Message) {
 
   // コマンドごとに振り分ける
   switch (command) {
-    case 'ping':
-      Commands.ping(message);
+    case 'addme':
+      Commands.addme(message);
+      break;
+
+    case 'changeRemindChannel':
+      Commands.changeRemindChannel(message);
       break;
 
     case 'fetch':
       Commands.fetch(message);
       break;
 
-    case 'changeRemindChannel':
-      Commands.changeRemindChannel(message);
+    case 'ping':
+      Commands.ping(message);
       break;
 
     case 'help':
