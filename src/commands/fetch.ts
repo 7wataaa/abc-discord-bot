@@ -1,6 +1,6 @@
 'use strict';
 
-import Discord from 'discord.js';
+import { Discord } from '../discordClient';
 import { config } from '../config';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ping } from './ping';

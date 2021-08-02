@@ -1,8 +1,7 @@
 'use strict';
 
-import Discord from 'discord.js';
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { Discord } from '../discordClient';
+import { prisma } from '../prismaClient';
 
 // メンションを飛ばすユーザーの登録
 export async function addme(message: Discord.Message) {

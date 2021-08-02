@@ -1,9 +1,7 @@
 'use strict';
 
-import { PrismaClient } from '@prisma/client';
-import Discord from 'discord.js';
-
-const prisma = new PrismaClient();
+import { prisma } from '../prismaClient';
+import { Discord } from '../discordClient';
 
 // リマインドする予定のチャンネルを変更
 export async function changeRemindChannel(message: Discord.Message) {

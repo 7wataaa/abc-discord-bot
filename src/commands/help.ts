@@ -1,6 +1,6 @@
 'use strict';
 
-import Discord from 'discord.js';
+import { Discord } from '../discordClient';
 import { config } from '../config';
 
 // コマンドたちを説明する埋め込みを送信するコマンド

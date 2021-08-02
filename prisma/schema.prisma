@@ -15,6 +15,6 @@ model send_users {
 }
 
 model send_channel {
-  server_id  String @unique 
-  channel_id String 
+  server_id  String @unique
+  channel_id String
 }

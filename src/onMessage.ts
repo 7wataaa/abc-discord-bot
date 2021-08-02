@@ -1,11 +1,10 @@
 'use strict';
 
-import Discord from 'discord.js';
+import { Discord } from './discordClient';
 import { config } from './config';
 import * as Commands from './commands/commands';
 
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { prisma } from './prismaClient';
 
 export async function onMessage(message: Discord.Message) {
   // プレフィックスで始まらない文字列 or ボットからの送信は反応しない
