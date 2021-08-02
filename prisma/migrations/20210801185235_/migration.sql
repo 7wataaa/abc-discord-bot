@@ -1,6 +1,8 @@
 /*
   Warnings:
+
   - The primary key for the `send_users` table will be changed. If it partially fails, the table could be left without primary key constraint.
+
 */
 -- AlterTable
 ALTER TABLE "send_channel" ALTER COLUMN "server_id" SET DATA TYPE TEXT,
