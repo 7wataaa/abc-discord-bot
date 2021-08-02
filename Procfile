@@ -1,1 +1,1 @@
-worker: ./node_modules/.bin/tsc --init && npx ts-node ./src/index.ts
+worker: npx ts-node ./src/index.ts
