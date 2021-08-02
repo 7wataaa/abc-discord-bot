@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 
 // メンションを飛ばすユーザーの登録
 export async function addme(message: Discord.Message) {
-  // TODO DBに登録する
   const createResult = await prisma.send_users
     .create({
       data: {
