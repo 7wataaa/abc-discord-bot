@@ -5,7 +5,7 @@ import { config } from '../config';
 
 // コマンドたちを説明する埋め込みを送信するコマンド
 export function help(message: Discord.Message) {
-  // 埋め込みのやつを作成
+  // 埋め込みのやつ
   const embed = new Discord.MessageEmbed()
     .setTitle('acbot の つかいかた')
     .setColor('#59B862')
@@ -15,8 +15,12 @@ export function help(message: Discord.Message) {
     )
     .setDescription(`プレフィックスは"${config.prefix}" です。`)
     .addFields([
-      { name: 'ping', value: 'ピンポンができます。デバッグ用。' },
+      {
+        name: 'changeRemindChannel',
+        value: 'リマインド予定のチャンネルを変更できます。',
+      },
       { name: 'fetch', value: '削除予定です。fetchのテストができます。' },
+      { name: 'ping', value: 'ピンポンができます。デバッグ用。' },
       { name: 'help', value: 'これをもう一度見たいときにどうぞ。' },
     ]);
 
