@@ -13,14 +13,17 @@ export async function addme(message: Discord.Message) {
         user_id: message.author.id,
       },
     })
-    .catch(() => {
-      return 'ユーザーの追加時にデータベースへの追加ができませんでした';
+    .catch((e) => {
+      console.log(e);
+      if (e.code === 'P2002') {
+        return `${message.author}さんはすでに登録されています。`;
+      } else {
+        return 'ユーザーの追加時にデータベースへの追加ができませんでした。。';
+      }
     });
 
   if (typeof createResult === 'string') {
-    message.channel.send(
-      'ERR: ユーザーの追加時にデータベースへの追加ができませんでした。。'
-    );
+    message.channel.send(`ERR: ${createResult}`);
     return;
   }
 
