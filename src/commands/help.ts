@@ -15,6 +15,8 @@ export function help(message: Discord.Message) {
     )
     .setDescription(`プレフィックスは"${config.prefix}" です。`)
     .addFields([
+      { name: 'addme', value: '叩き起こすユーザーを登録できます。' },
+      { name: 'removeme', value: '叩き起こすユーザーを登録解除できます。' },
       {
         name: 'changeRemindChannel',
         value: 'リマインド予定のチャンネルを変更できます。',
