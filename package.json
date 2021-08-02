@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "ts-node-dev --respawn src/index.ts"
+    "dev": "DATABASE_URL=\"postgresql://postgres:postgres@db:5432/acbot\" ts-node-dev --respawn src/index.ts"
   },
   "dependencies": {
     "@prisma/client": "2.28.0",
