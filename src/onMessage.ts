@@ -40,6 +40,10 @@ export async function onMessage(message: Discord.Message) {
       Commands.addme(message);
       break;
 
+    case 'removeme':
+      Commands.removeme(message);
+      break;
+
     case 'changeRemindChannel':
       Commands.changeRemindChannel(message);
       break;
