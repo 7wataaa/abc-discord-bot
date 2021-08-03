@@ -28,9 +28,6 @@ export async function onMessage(message: Discord.Message) {
   // リマインドを送信するチャンネルを設定してなければしてもらうif
   if (!(await targetChannel)) {
     setFirstRemindChannel(message);
-
-    // TODO ここでreturnするか考える(コマンドの検知→初期設定のながれのあとにそのコマンドを実行するかどうか)
-    return;
   }
 
   // コマンドごとに振り分ける
