@@ -22,14 +22,24 @@ export async function changeRemindChannel(message: Discord.Message) {
         )}\nに設定されています。\nリマインドするチャンネルをこのチャンネルに再設定しますか?`
       : 'リマインドするチャンネルが正常に保存されていません。\nリマインドするチャンネルをこのチャンネルに再設定しますか?';
 
+  const embed = (description: string) =>
+    new Discord.MessageEmbed()
+      .setTitle('changeRemindChannel')
+      .setColor('#59B862')
+      .setAuthor(
+        'acbot',
+        'https://cdn.discordapp.com/app-icons/860135640577212426/cea28ff8a283f1dd07d52b3030b480a1.png?size=128'
+      )
+      .setDescription(description);
+
   // リアクションをつける確認メッセージ
   const responseWaitingMessage = await message.channel.send(
-    verificationMessage
+    embed(verificationMessage)
   );
 
   // 応答してほしい絵文字の表示
-  responseWaitingMessage.react('✅');
-  responseWaitingMessage.react('❌');
+  await responseWaitingMessage.react('✅');
+  await responseWaitingMessage.react('❌');
 
   // 10秒間だけリアクションを待って、リアクションがあればDiscord.Collectionを返す
   const collected = await responseWaitingMessage
@@ -42,10 +52,14 @@ export async function changeRemindChannel(message: Discord.Message) {
     })
     .catch(() => 'Error');
 
+  responseWaitingMessage.reactions.removeAll();
+
   // もし正常に応答されなかったらreturn
   if (typeof collected === 'string') {
     message.channel.send(
-      '応答を確認することができませんでした。。もう一度やり直してください。'
+      embed(
+        '応答を確認することができませんでした。。もう一度やり直してください。'
+      )
     );
     return;
   }
@@ -55,7 +69,7 @@ export async function changeRemindChannel(message: Discord.Message) {
 
   // ❌のリアクションだとreturn
   if (emoji === '❌') {
-    message.channel.send('了解しました。');
+    message.channel.send(embed('了解しました。'));
     return;
   }
 
@@ -75,8 +89,10 @@ export async function changeRemindChannel(message: Discord.Message) {
   });
 
   message.channel.send(
-    `わかりました！ 今後\n${message.guild!.channels.cache.find(
-      (c) => c.id === upsertResult.channel_id
-    )}\nに通知を送信します。`
+    embed(
+      `わかりました！ 今後\n${message.guild!.channels.cache.find(
+        (c) => c.id === upsertResult.channel_id
+      )}\nに通知を送信します。`
+    )
   );
 }

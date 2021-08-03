@@ -73,14 +73,27 @@ async function setFirstRemindChannel(message: Discord.Message) {
   const filter: Discord.CollectorFilter = (reaction, user) =>
     ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
 
+  // 確認メッセージのembed
+  const embed = (description: string) =>
+    new Discord.MessageEmbed()
+      .setTitle('Initial setting')
+      .setColor('#59B862')
+      .setAuthor(
+        'acbot',
+        'https://cdn.discordapp.com/app-icons/860135640577212426/cea28ff8a283f1dd07d52b3030b480a1.png?size=128'
+      )
+      .setDescription(description);
+
   // リアクションをつける確認メッセージ
   const responseWaitingMessage = await message.channel.send(
-    `リマインドするチャンネルが設定されていません。\nこのチャンネルに設定しますか?`
+    embed(
+      `リマインドするチャンネルが設定されていません。\nこのチャンネルに設定しますか?`
+    )
   );
 
   // 応答してほしい絵文字の表示
-  responseWaitingMessage.react('✅');
-  responseWaitingMessage.react('❌');
+  await responseWaitingMessage.react('✅');
+  await responseWaitingMessage.react('❌');
 
   // 10秒間だけリアクションを待って、リアクションがあればDiscord.Collectionを返す
   const collected = await responseWaitingMessage
@@ -93,10 +106,14 @@ async function setFirstRemindChannel(message: Discord.Message) {
     })
     .catch(() => 'Error');
 
+  responseWaitingMessage.reactions.removeAll();
+
   // もし正常に応答されなかったらreturn
   if (typeof collected === 'string') {
     message.channel.send(
-      '応答を確認することができませんでした。。もう一度やり直してください。'
+      embed(
+        '応答を確認することができませんでした。。もう一度やり直してください。'
+      )
     );
     return;
   }
@@ -107,7 +124,7 @@ async function setFirstRemindChannel(message: Discord.Message) {
   // ❌のリアクションだとreturn
   if (emoji === '❌') {
     message.channel.send(
-      '了解しました。他のチャンネルでもう一度やり直してください。'
+      embed('了解しました。他のチャンネルでもう一度やり直してください。')
     );
     return;
   }
@@ -124,15 +141,19 @@ async function setFirstRemindChannel(message: Discord.Message) {
 
   // もし正常に作成ができていなかったらreturn
   if (typeof createResult === 'string') {
-    message.channel.send('ERR: データベースに登録することができませんでした。');
+    message.channel.send(
+      embed('ERR: データベースに登録することができませんでした。')
+    );
     return;
   }
 
   message.channel.send(
-    `わかりました！ 今後\n${message.guild!.channels.cache.find(
-      (c) => c.id === createResult.channel_id
-    )}\nに通知を送信します。\n変更する場合は、${
-      config.prefix
-    }changeRemindChannel で変更することができます。`
+    embed(
+      `わかりました！ 今後\n${message.guild!.channels.cache.find(
+        (c) => c.id === createResult.channel_id
+      )}\nに通知を送信します。\n変更する場合は、${
+        config.prefix
+      }changeRemindChannel で変更することができます。`
+    )
   );
 }
