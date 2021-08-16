@@ -18,7 +18,7 @@ export async function changeRemindChannel(message: Discord.Message) {
   const permission: Discord.PermissionString[] = ['ADMINISTRATOR'];
 
   // メッセージ送信者がpermissionを持っていなかったらreturn
-  if (!message.member.hasPermission(permission)) {
+  if (!message.member?.hasPermission(permission) && true) {
     message.channel.send(
       embed(`このコマンドを実行するための権限がありません。\n\n${permission}`)
     );
