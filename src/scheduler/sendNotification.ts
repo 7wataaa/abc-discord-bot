@@ -5,7 +5,7 @@ import { prisma } from '../prismaClient';
 // TODO Heroku schedulerで10分間隔で起動させる、もし予定された時刻が10分以内だったらその時刻まで待って通知を送信する
 async function sendNotification() {
   // TODO モックからDBにある日付に変更する
-  const target = new Date(2021, 8, 18, 19 - 9, 36);
+  const target = new Date(2021, 8, 18, 20 - 9, 14);
 
   // TODO 一応日付またぐ場合の処理しないといけない
   const timeDifference = target.valueOf() - new Date().valueOf();
