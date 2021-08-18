@@ -2,6 +2,14 @@ import { TextChannel } from 'discord.js';
 import { client } from '../discordClient';
 import { prisma } from '../prismaClient';
 
+//=================================
+
+(async () => {
+  await sendNotification();
+})();
+
+//=================================
+
 // TODO Heroku schedulerで10分間隔で起動させる、もし予定された時刻が10分以内だったらその時刻まで待って通知を送信する
 async function sendNotification() {
   // TODO モックからDBにある日付に変更する
