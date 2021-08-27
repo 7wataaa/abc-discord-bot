@@ -18,3 +18,9 @@ model send_channel {
   server_id  String @unique
   channel_id String
 }
+
+model contest {
+  url  String   @unique
+  name String
+  date DateTime
+}
