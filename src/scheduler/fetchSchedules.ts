@@ -17,7 +17,7 @@ type fetchResponse = Array<{
   url: string;
 }>;
 
-//TODO 日程の一覧をGASのAPIからもらってDBに登録する
+// 日程の一覧をGASのAPIからもらってDBに登録する
 async function fetchSchedules() {
   const contests = await axios
     .get<fetchResponse>(`${process.env.FETCH_URL}`)
@@ -25,8 +25,10 @@ async function fetchSchedules() {
       throw e;
     });
 
+  console.log(contests.data);
+
   for (const e of contests.data) {
-    prisma.contest.upsert({
+    await prisma.contest.upsert({
       where: {
         url: e.url,
       },
@@ -42,4 +44,6 @@ async function fetchSchedules() {
       },
     });
   }
+
+  console.log('done.');
 }
