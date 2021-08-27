@@ -46,4 +46,5 @@ async function fetchSchedules() {
   }
 
   console.log('done.');
+  return;
 }
