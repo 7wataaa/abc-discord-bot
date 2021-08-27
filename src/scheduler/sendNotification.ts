@@ -1,11 +1,23 @@
-import { TextChannel } from 'discord.js';
-import { client } from '../discordClient';
+import { client, Discord } from '../discordClient';
 import { prisma } from '../prismaClient';
 
 //=================================
 
 (async () => {
-  await sendNotification();
+  //await sendNotification();
+
+  const embed = (description: string) =>
+    new Discord.MessageEmbed()
+      .setTitle('Initial setting')
+      .setColor('#59B862')
+      .setAuthor(
+        'acbot',
+        'https://cdn.discordapp.com/app-icons/860135640577212426/cea28ff8a283f1dd07d52b3030b480a1.png?size=128'
+      )
+      .setDescription(description);
+
+  console.log(client.uptime);
+  //client.channels.cache.get('876878253313384499');
 })();
 
 //=================================
@@ -14,33 +26,37 @@ const oneDateAsMillisecond = 86400 * 1000;
 
 // TODO Heroku schedulerで10分間隔で起動させる、もし予定された時刻が10分以内だったらその時刻まで待って通知を送信する
 async function sendNotification() {
-  // TODO モックからDBにある日付に変更する
-  const target = new Date(2021, 8, 19, 21 - 9, 10);
+  /* while (true) {
+    // TODO DBから一番小さい日時をみて、その時間と同じ分なら通知を送信、DBのデータを消す
+    const nearestContestDate = (
+      await prisma.contest.aggregate({
+        _min: {
+          date: true,
+        },
+      })
+    )._min.date;
 
-  // TODO 一応日付またぐ場合の処理しないといけない
-  const timeDifference = target.valueOf() - new Date().valueOf();
+    if (!nearestContestDate) {
+      await sleep(1000 * 30);
+      continue;
+    }
 
-  // 過ぎてしまった時間と、24時間以上の差がある場合何もしない
-  if (!(0 < timeDifference && timeDifference < oneDateAsMillisecond)) {
-    console.info('予定が24時間未満ではないので何もしない');
-    return;
-  }
-  console.info(`予定が24時間なので${timeDifference}ミリ秒待って通知を送信する`);
+    // TODO ここで時間を判定する
 
-  // 時刻まで待つ
-  await sleep(timeDifference);
+    const nearestTimeContests = await prisma.contest.findMany({
+      where: {
+        date: nearestContestDate,
+      },
+    });
 
-  console.info(`${timeDifference}ミリ秒待ったので通知を送信`);
+    const sendChannels = await prisma.send_channel.findMany();
 
-  // DBに登録してるサーバーのチャンネルに送信してく
-  const sendChannels = await prisma.send_channel.findMany();
+    for (const sendChannel of sendChannels) {
+      
+    }
 
-  for (const e of sendChannels) {
-    const channel = client.channels.cache!.get(e.channel_id) as TextChannel;
-
-    console.info(channel.name);
-    channel.send(`DEBUG用: 時刻は${target}です。`);
-  }
+    await sleep(1000 * 30);
+  } */
 }
 
 /**
