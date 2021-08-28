@@ -3,6 +3,7 @@
 import dotenv from 'dotenv';
 import { client } from './discordClient';
 import { onMessage } from './onMessage';
+import { sendNotification } from './scheduler/sendNotification';
 
 dotenv.config();
 
@@ -12,4 +13,8 @@ client.on('ready', () => {
 
 client.on('message', onMessage);
 
-client.login(`${process.env.TOKEN}`);
+(async () => {
+  await client.login(`${process.env.TOKEN}`);
+
+  sendNotification(client);
+})();
