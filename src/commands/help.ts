@@ -21,7 +21,6 @@ export function help(message: Discord.Message) {
         name: 'changeRemindChannel',
         value: 'リマインド予定のチャンネルを変更できます。',
       },
-      { name: 'fetch', value: '削除予定です。fetchのテストができます。' },
       { name: 'ping', value: 'ピンポンができます。デバッグ用。' },
       { name: 'help', value: 'これをもう一度見たいときにどうぞ。' },
     ]);

@@ -48,10 +48,6 @@ export async function onMessage(message: Discord.Message) {
       Commands.changeRemindChannel(message);
       break;
 
-    case 'fetch':
-      Commands.fetch(message);
-      break;
-
     case 'ping':
       Commands.ping(message);
       break;
