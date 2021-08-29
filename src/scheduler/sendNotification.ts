@@ -1,13 +1,14 @@
+import { contest } from '@prisma/client';
 import Discord from 'discord.js';
 
 import { prisma } from '../prismaClient';
 
-const oneMinutesAsMillisecond = 60000;
+const oneMinuteAsMillisecond = 60000;
+const thirtyMinuteAsMillisecond = 1800000;
+const oneDayAsMillisecond = 86400000;
 
-// TODO Heroku schedulerで10分間隔で起動させる、もし予定された時刻が10分以内だったらその時刻まで待って通知を送信する
 export async function sendNotification(client: Discord.Client) {
   while (true) {
-    // TODO DBから一番小さい日時をみて、その時間と同じ分なら通知を送信、DBのデータを消す
     const nearestContestDate = (
       await prisma.contest.aggregate({
         _min: {
@@ -21,12 +22,7 @@ export async function sendNotification(client: Discord.Client) {
       continue;
     }
 
-    const timeDifference = nearestContestDate.getTime() - new Date().getTime();
-
-    if (timeDifference > oneMinutesAsMillisecond) {
-      await sleep(1000 * 30);
-      continue;
-    }
+    const sendChannels = await prisma.send_channel.findMany();
 
     const nearestContests = await prisma.contest.findMany({
       where: {
@@ -34,39 +30,108 @@ export async function sendNotification(client: Discord.Client) {
       },
     });
 
-    const sendChannels = await prisma.send_channel.findMany();
+    const contestInfo = nearestContests
+      .map((e) => {
+        return `${e.name}\n${e.url}`;
+      })
+      .join('\n');
 
-    for (const sendChannel of sendChannels) {
-      const channel = client.channels.cache.get(sendChannel.channel_id);
+    const timeDifference = nearestContestDate.getTime() - new Date().getTime();
 
-      if (!channel) {
-        console.error(
-          `ERROR: 通知が送信できませんでした。チャンネルID: ${sendChannel.channel_id}, サーバーID: ${sendChannel.server_id}`
-        );
+    if (timeDifference < oneMinuteAsMillisecond) {
+      await Promise.all([
+        ...sendChannels.map((e) => {
+          return async () => {
+            const channel = client.channels.cache.get(e.channel_id);
+
+            if (!channel) {
+              console.error(
+                `ERROR: 通知が送信できませんでした。チャンネルID: ${e.channel_id}, サーバーID: ${e.server_id}`
+              );
+            } else if (channel.isText()) {
+              await channel.send(
+                `@everyone\nまもなくコンテストが開始されます！\n${contestInfo}`
+              );
+              console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
+            }
+          };
+        }),
+      ]);
+
+      await prisma.contest.deleteMany({
+        where: {
+          date: nearestContestDate,
+        },
+      });
+
+      await sleep(1000 * 30);
+    } else if (timeDifference < thirtyMinuteAsMillisecond) {
+      if (!nearestContests.every((e) => e.notified_times == 1)) {
+        await sleep(1000 * 30);
 
         continue;
       }
 
-      console.log(`通知を送信 チャンネルID: ${sendChannel.channel_id}`);
+      await Promise.all([
+        ...sendChannels.map((e) => {
+          return async () => {
+            const channel = client.channels.cache.get(e.channel_id);
 
-      if (channel.isText()) {
-        const contestInfo = nearestContests
-          .map((e) => {
-            return `${e.name}\n${e.url}`;
-          })
-          .join('\n');
+            if (!channel) {
+              console.error(
+                `ERROR: 通知が送信できませんでした。チャンネルID: ${e.channel_id}, サーバーID: ${e.server_id}`
+              );
+            } else if (channel.isText()) {
+              await channel.send(
+                `@everyone\n30分後にコンテストが開始されます！\n${contestInfo}`
+              );
+              console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
+            }
+          };
+        }),
+      ]);
 
-        await channel.send(
-          embed(`@everyone\nまもなくコンテストが開始されます！\n${contestInfo}`)
-        );
+      await prisma.contest.updateMany({
+        data: {
+          notified_times: {
+            increment: 1,
+          },
+        },
+      });
+    } else if (timeDifference < oneDayAsMillisecond) {
+      if (!nearestContests.every((e) => e.notified_times == 0)) {
+        await sleep(1000 * 30);
+
+        continue;
       }
-    }
 
-    await prisma.contest.deleteMany({
-      where: {
-        date: nearestContestDate,
-      },
-    });
+      await Promise.all([
+        ...sendChannels.map((e) => {
+          return async () => {
+            const channel = client.channels.cache.get(e.channel_id);
+
+            if (!channel) {
+              console.error(
+                `ERROR: 通知が送信できませんでした。チャンネルID: ${e.channel_id}, サーバーID: ${e.server_id}`
+              );
+            } else if (channel.isText()) {
+              await channel.send(
+                `明日、コンテストが開催されます！\n${contestInfo}`
+              );
+              console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
+            }
+          };
+        }),
+      ]);
+
+      await prisma.contest.updateMany({
+        data: {
+          notified_times: {
+            increment: 1,
+          },
+        },
+      });
+    }
 
     await sleep(1000 * 30);
   }
