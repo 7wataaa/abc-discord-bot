@@ -1,4 +1,3 @@
-import { contest } from '@prisma/client';
 import Discord from 'discord.js';
 
 import { prisma } from '../prismaClient';
@@ -8,6 +7,8 @@ const thirtyMinuteAsMillisecond = 1800000;
 const oneDayAsMillisecond = 86400000;
 
 export async function sendNotification(client: Discord.Client) {
+  console.log('monitoringStart');
+
   while (true) {
     const nearestContestDate = (
       await prisma.contest.aggregate({
@@ -16,6 +17,8 @@ export async function sendNotification(client: Discord.Client) {
         },
       })
     )._min.date;
+
+    console.log(nearestContestDate);
 
     if (!nearestContestDate) {
       await sleep(1000 * 30);
@@ -30,6 +33,8 @@ export async function sendNotification(client: Discord.Client) {
       },
     });
 
+    console.log(nearestContests);
+
     const contestInfo = nearestContests
       .map((e) => {
         return `${e.name}\n${e.url}`;
@@ -37,6 +42,8 @@ export async function sendNotification(client: Discord.Client) {
       .join('\n');
 
     const timeDifference = nearestContestDate.getTime() - new Date().getTime();
+
+    console.log(timeDifference);
 
     if (timeDifference < oneMinuteAsMillisecond) {
       await Promise.all([
@@ -50,7 +57,9 @@ export async function sendNotification(client: Discord.Client) {
               );
             } else if (channel.isText()) {
               await channel.send(
-                `@everyone\nまもなくコンテストが開始されます！\n${contestInfo}`
+                embed(
+                  `@everyone\nまもなくコンテストが開始されます！\n${contestInfo}`
+                )
               );
               console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
             }
@@ -63,15 +72,10 @@ export async function sendNotification(client: Discord.Client) {
           date: nearestContestDate,
         },
       });
-
-      await sleep(1000 * 30);
-    } else if (timeDifference < thirtyMinuteAsMillisecond) {
-      if (!nearestContests.every((e) => e.notified_times == 1)) {
-        await sleep(1000 * 30);
-
-        continue;
-      }
-
+    } else if (
+      timeDifference < thirtyMinuteAsMillisecond &&
+      nearestContests.every((e) => e.notified_times == 1)
+    ) {
       await Promise.all([
         ...sendChannels.map((e) => {
           return async () => {
@@ -83,7 +87,9 @@ export async function sendNotification(client: Discord.Client) {
               );
             } else if (channel.isText()) {
               await channel.send(
-                `@everyone\n30分後にコンテストが開始されます！\n${contestInfo}`
+                embed(
+                  `@everyone\n30分後にコンテストが開始されます！\n${contestInfo}`
+                )
               );
               console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
             }
@@ -98,13 +104,10 @@ export async function sendNotification(client: Discord.Client) {
           },
         },
       });
-    } else if (timeDifference < oneDayAsMillisecond) {
-      if (!nearestContests.every((e) => e.notified_times == 0)) {
-        await sleep(1000 * 30);
-
-        continue;
-      }
-
+    } else if (
+      timeDifference < oneDayAsMillisecond &&
+      nearestContests.every((e) => e.notified_times == 0)
+    ) {
       await Promise.all([
         ...sendChannels.map((e) => {
           return async () => {
@@ -116,7 +119,7 @@ export async function sendNotification(client: Discord.Client) {
               );
             } else if (channel.isText()) {
               await channel.send(
-                `明日、コンテストが開催されます！\n${contestInfo}`
+                embed(`明日、コンテストが開催されます！\n${contestInfo}`)
               );
               console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
             }
