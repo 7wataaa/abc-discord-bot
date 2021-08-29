@@ -17,7 +17,7 @@ export function help(message: Discord.Message) {
     .addFields([
       { name: 'ping', value: 'ピンポンができます。起動確認用。' },
       {
-        name: 'changeRemindChannel',
+        name: 'changeNotificationChannel',
         value: 'リマインド予定のチャンネルを変更できます。',
       },
       { name: 'help', value: 'これをもう一度見たいときにどうぞ。' },

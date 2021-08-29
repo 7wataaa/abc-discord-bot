@@ -46,8 +46,8 @@ export async function onMessage(message: Discord.Message) {
       // TODO remindChannelの実装(現在の通知するチャンネルを確認するコマンド)
       break;
 
-    case 'changeRemindChannel':
-      Commands.changeRemindChannel(message);
+    case 'changeNotificationChannel':
+      Commands.changeNotificationChannel(message);
       break;
 
     case 'ping':
@@ -105,7 +105,7 @@ async function setFirstRemindChannel(message: Discord.Message) {
         (c) => c.id === createResult.channel_id
       )}\nに通知を送信します。\n変更する場合は、${
         config.prefix
-      }changeRemindChannel で変更することができます。`
+      }changeNotificationChannel で変更することができます。`
     )
   );
 }

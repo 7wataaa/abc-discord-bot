@@ -4,10 +4,10 @@ import { prisma } from '../prismaClient';
 import { Discord } from '../discordClient';
 
 // リマインドする予定のチャンネルを変更
-export async function changeRemindChannel(message: Discord.Message) {
+export async function changeNotificationChannel(message: Discord.Message) {
   const embed = (description: string) =>
     new Discord.MessageEmbed()
-      .setTitle('changeRemindChannel')
+      .setTitle('changeNotificationChannel')
       .setColor('#59B862')
       .setAuthor(
         'acbot',
