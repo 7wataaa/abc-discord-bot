@@ -95,13 +95,18 @@ export async function sendNotification(client: Discord.Client) {
         }),
       ]);
 
-      await prisma.contest.updateMany({
-        data: {
-          notified_times: {
-            increment: 1,
+      for (const e of nearestContests) {
+        await prisma.contest.update({
+          where: {
+            url: e.url,
           },
-        },
-      });
+          data: {
+            notified_times: {
+              increment: 1,
+            },
+          },
+        });
+      }
     } else if (
       timeDifference < oneDayAsMillisecond &&
       nearestContests.every((e) => e.notified_times == 0)
@@ -125,13 +130,18 @@ export async function sendNotification(client: Discord.Client) {
         }),
       ]);
 
-      await prisma.contest.updateMany({
-        data: {
-          notified_times: {
-            increment: 1,
+      for (const e of nearestContests) {
+        await prisma.contest.update({
+          where: {
+            url: e.url,
           },
-        },
-      });
+          data: {
+            notified_times: {
+              increment: 1,
+            },
+          },
+        });
+      }
     }
 
     await sleep(1000 * 30);
