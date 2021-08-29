@@ -43,12 +43,10 @@ export async function sendNotification(client: Discord.Client) {
 
     const timeDifference = nearestContestDate.getTime() - new Date().getTime();
 
-    console.log(timeDifference);
-
     if (timeDifference < oneMinuteAsMillisecond) {
       await Promise.all([
         ...sendChannels.map((e) => {
-          return async () => {
+          return (async () => {
             const channel = client.channels.cache.get(e.channel_id);
 
             if (!channel) {
@@ -63,7 +61,7 @@ export async function sendNotification(client: Discord.Client) {
               );
               console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
             }
-          };
+          })();
         }),
       ]);
 
@@ -78,7 +76,7 @@ export async function sendNotification(client: Discord.Client) {
     ) {
       await Promise.all([
         ...sendChannels.map((e) => {
-          return async () => {
+          return (async () => {
             const channel = client.channels.cache.get(e.channel_id);
 
             if (!channel) {
@@ -93,7 +91,7 @@ export async function sendNotification(client: Discord.Client) {
               );
               console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
             }
-          };
+          })();
         }),
       ]);
 
@@ -110,7 +108,7 @@ export async function sendNotification(client: Discord.Client) {
     ) {
       await Promise.all([
         ...sendChannels.map((e) => {
-          return async () => {
+          return (async () => {
             const channel = client.channels.cache.get(e.channel_id);
 
             if (!channel) {
@@ -123,7 +121,7 @@ export async function sendNotification(client: Discord.Client) {
               );
               console.log(`通知を送信 チャンネルID: ${e.channel_id}`);
             }
-          };
+          })();
         }),
       ]);
 
