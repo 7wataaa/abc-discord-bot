@@ -101,9 +101,11 @@ async function setFirstRemindChannel(message: Discord.Message) {
 
   const msg = await message.channel.send(
     embed(
-      `リマインドを送信するチャンネルをこのチャンネルに設定しました。\n今後\n${message.guild!.channels.cache.find(
-        (c) => c.id === createResult.channel_id
-      )}\nに通知を送信します。\n変更する場合は、${
+      `リマインドを送信するチャンネルをこのチャンネルに設定しました。\n今後\n${
+        message.guild!.channels.cache.find(
+          (c) => c.id === createResult.channel_id
+        )?.name
+      }\nに通知を送信します。\n変更する場合は、${
         config.prefix
       }changeNotificationChannel で変更することができます。`
     )

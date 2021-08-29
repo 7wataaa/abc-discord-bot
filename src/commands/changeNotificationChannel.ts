@@ -42,9 +42,11 @@ export async function changeNotificationChannel(message: Discord.Message) {
 
   message.channel.send(
     embed(
-      `わかりました！ 今後\n${message.guild!.channels.cache.find(
-        (c) => c.id === upsertResult.channel_id
-      )}\nに通知を送信します。`
+      `わかりました！ 今後\n${
+        message.guild!.channels.cache.find(
+          (c) => c.id === upsertResult.channel_id
+        )?.name
+      }\nに通知を送信します。`
     )
   );
 }
