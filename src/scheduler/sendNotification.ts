@@ -62,6 +62,12 @@ export async function sendNotification(client: Discord.Client) {
       }
     }
 
+    await prisma.contest.deleteMany({
+      where: {
+        date: nearestContestDate,
+      },
+    });
+
     await sleep(1000 * 30);
   }
 }
