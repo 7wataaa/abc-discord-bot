@@ -15,14 +15,14 @@ export function help(message: Discord.Message) {
     )
     .setDescription(`プレフィックスは"${config.prefix}" です。`)
     .addFields([
-      { name: 'addme', value: '叩き起こすユーザーを登録できます。' },
-      { name: 'removeme', value: '叩き起こすユーザーを登録解除できます。' },
+      { name: 'ping', value: 'ピンポンができます。起動確認用。' },
       {
         name: 'changeRemindChannel',
         value: 'リマインド予定のチャンネルを変更できます。',
       },
-      { name: 'ping', value: 'ピンポンができます。デバッグ用。' },
       { name: 'help', value: 'これをもう一度見たいときにどうぞ。' },
+      { name: 'addme', value: 'ver.2にて実装予定です。' },
+      { name: 'removeme', value: 'ver.2にて実装予定です。' },
     ]);
 
   //埋め込みのやつを送信

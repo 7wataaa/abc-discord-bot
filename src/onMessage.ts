@@ -33,11 +33,13 @@ export async function onMessage(message: Discord.Message) {
   // コマンドごとに振り分ける
   switch (command) {
     case 'addme':
-      Commands.addme(message);
+      // Commands.addme(message);
+      message.channel.send('ver.2にて実装予定です。');
       break;
 
     case 'removeme':
-      Commands.removeme(message);
+      // Commands.removeme(message);
+      message.channel.send('ver.2にて実装予定です。');
       break;
 
     case 'remindChannel':
