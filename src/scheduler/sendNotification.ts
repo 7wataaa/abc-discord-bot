@@ -85,7 +85,7 @@ function sleep(millisecond: number) {
 
 const embed = (description: string) =>
   new Discord.MessageEmbed()
-    .setTitle('Initial setting')
+    .setTitle('コンテスト通知')
     .setColor('#59B862')
     .setAuthor(
       'acbot',
