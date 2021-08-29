@@ -20,7 +20,8 @@ model send_channel {
 }
 
 model contest {
-  url  String   @unique
-  name String
-  date DateTime
+  url            String   @unique
+  name           String
+  date           DateTime
+  notified_times Int      @default(0)
 }
