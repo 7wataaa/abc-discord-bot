@@ -5,7 +5,7 @@
 ## Overview
 
 AtCoder Beginner Contenstを通知するDiscord bot。  
-開催時刻の1日前・30分前・1分前にURLとメンションを送信する。
+開催時刻の1日前・30分前・1分前にURLとメンションを送信します。
 
 
 ## Author
